@@ -1,0 +1,28 @@
+{
+  "name": "public",
+  "version": "0.0.0",
+  "authors": [
+    "Shaun <smcavinney@rjmetrics.com>"
+  ],
+  "moduleType": [
+    "amd",
+    "es6",
+    "globals",
+    "node",
+    "yui"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-ui-tinymce": "~0.0.16"
+  },
+  "devDependencies": {
+    "angular-ui-tinymce": "~0.0.16"
+  }
+}
