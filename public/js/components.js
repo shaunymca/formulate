@@ -6,12 +6,25 @@
 angular.module('myApp.components', []).
   component('login', {
     templateUrl: "js/partials/login.html",
-    controller: function() {
-      this.greeting = 'hello';
-
-      this.toggleGreeting = function() {
-        this.greeting = (this.greeting == 'hello') ? 'whats up' : 'hello'
-      }
+    controller: function($scope, $http, $rootScope, $state) {
+      $scope.user = {};
+      // Register the login() function
+      $scope.login = function(){
+        $http.post('/login', {
+          username: $scope.user.username,
+          password: $scope.user.password,
+        })
+        .success(function(user){
+          // No error: authentication OK
+          $rootScope.message = 'Authentication successful!';
+          $state.go('app');
+        })
+        .error(function(){
+          // Error: authentication failed
+          $rootScope.message = 'Authentication failed.';
+          $state.go('login');
+        });
+      };
     }
   })
   .component('app', {

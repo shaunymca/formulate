@@ -44,6 +44,13 @@ passport.use(new LocalStrategy(
   }
 ));
 
+// Define a middleware function to be used for every secured routes
+var auth = function(req, res, next)
+{ if (!req.isAuthenticated())
+  res.send(401);
+  else next();
+};
+
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -55,15 +62,28 @@ passport.deserializeUser(function(id, done) {
 });
 
 // routes ==================================================
-app.get('*', function(req, res) {
+app.get('/', function(req, res) {
   res.sendfile("public/js/partials/index.html");
 });
 
-app.post('/login',
-  passport.authenticate('local', { successRedirect: '/app',
-                                   failureRedirect: '/',
-                                   failureFlash: true })
-);
+user = {list:[1,2,3,4]};
+
+
+// route to test if user is logged in or not
+app.get('/loggedin', function(req, res) {
+  res.send(req.isAuthenticated() ? req.user :'0' );
+});
+
+// route to log in
+app.post('/login', passport.authenticate('local'), function(req, res) {
+  res.send(req.user);
+});
+
+// route to log out
+app.post('/logout', function(req, res) {
+  req.logOut();
+  res.send(200);
+})
 
 // start app ===============================================
 app.listen(port);
