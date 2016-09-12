@@ -1,0 +1,8 @@
+<p>account.name = {{account.name}}</p>
+<p>account.age = {{account.age}}
+<p>{{howto}}</p>
+<form method="post" >
+  <textarea ui-tinymce="tinymceOptions" ng-model="tinymceModel"></textarea>
+
+</form>
+<div my-compile-unsafe="tinymceModel"></div>
