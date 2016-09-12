@@ -17,47 +17,41 @@ angular.module('myApp', [
     //================================================
   var checkLoggedin = function($q, $timeout, $http, $state, $rootScope){
     // Initialize a new promise
-    var deferred = $q.defer();
 
     // Make an AJAX call to check if the user is logged in
-    $http.get('/loggedin').success(function(user){
-      // Authenticated
-      if (user !== '0')
-        /*$timeout(deferred.resolve, 0);*/
-        deferred.resolve();
+    $http.get('/loggedin')
+      .then(function(user) {
+        // Authenticated
+        console.log('user');
+        console.log(user.data);
+        if (user.data != '0')
+          /*$timeout(deferred.resolve, 0);*/
+          return;
 
-      // Not Authenticated
-      else {
-        $rootScope.message = 'You need to log in.';
-        //$timeout(function(){deferred.reject();}, 0);
-        deferred.reject();
-        $state.go('login');
-      }
-    });
-
-    return deferred.promise;
-  };
-
-  // Add an interceptor for AJAX errors
-  //================================================
-  $httpProvider.interceptors.push(function($q) {
-    return {
-      response: function(response) {
-        // do something on success
-        return response;
-      },
-      responseError: function(response) {
-        if (response.status === 401)
+        // Not Authenticated
+        else {
+          $rootScope.message = 'You need to log in.';
           $state.go('login');
-        return $q.reject(response);
-      }
-    };
-  });
+          return;
+        }
+      },function(error) {
+          console.log(error);
+          $rootScope.message = 'Error logging in';
+          $state.go('signup');
+          return;
+      });
+
+  };
 
   var states = [
     {
+      name: 'signup',
+      url: '',
+      template: '<signup></signup>'
+    },
+    {
       name: 'login',
-      url: '/',
+      url: '/login',
       template: '<login></login>'
     },
     {
@@ -65,7 +59,7 @@ angular.module('myApp', [
       url: '/app',
       template: '<app></app>',
       resolve: {
-          loggedin: checkLoggedin
+        loggedin: checkLoggedin
       }
     }
   ];

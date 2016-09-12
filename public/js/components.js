@@ -11,18 +11,43 @@ angular.module('myApp.components', []).
       // Register the login() function
       $scope.login = function(){
         $http.post('/login', {
-          username: $scope.user.username,
+          email: $scope.user.email,
           password: $scope.user.password,
-        })
-        .success(function(user){
-          // No error: authentication OK
-          $rootScope.message = 'Authentication successful!';
-          $state.go('app');
-        })
-        .error(function(){
-          // Error: authentication failed
-          $rootScope.message = 'Authentication failed.';
-          $state.go('login');
+        }).then(function(user) {
+            // No error: authentication OK
+            $rootScope.message = 'Signup successful!';
+            $rootScope.user = user;
+            $state.go('app');
+          }, function(response) {error(function(){
+            console.log(response);
+            // Error: authentication failed
+            $rootScope.message = 'Singup Failed';
+            $state.go('login');
+          });
+        });
+      };
+    }
+  })
+  .component('signup', {
+    templateUrl: "js/partials/signup.html",
+    controller: function($scope, $http, $rootScope, $state) {
+      $scope.user = {};
+      // Register the login() function
+      $scope.signup = function(){
+        $http.post('/signup', {
+          email: $scope.user.email,
+          password: $scope.user.password,
+        }).then(function(user) {
+            // No error: authentication OK
+            $rootScope.message = 'Signup successful!';
+            $rootScope.user = user;
+            $state.go('app');
+          }, function(response) {error(function(){
+            console.log(response);
+            // Error: authentication failed
+            $rootScope.message = 'Singup Failed';
+            $state.go('signup');
+          });
         });
       };
     }

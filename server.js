@@ -5,10 +5,11 @@ var express        = require('express'),
     methodOverride = require('method-override'),
     crypto 				 = require('crypto'),
     passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy,
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
-    session = require('express-session');
+    session = require('express-session'),
+    dotenv = require('dotenv').config(),
+    usersModel = require('./modules/usersModel.js');
 
 // config files
 
@@ -27,28 +28,14 @@ app.use(session({ secret: 'somesecret' }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+require('./config/passport.js')(passport); // pass passport for configuration
 // Passport Settings ==================================================
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    User.findOne({ username: username }, function(err, user) {
-      if (err) { return done(err); }
-      if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-      if (!user.validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-      return done(null, user);
-    });
-  }
-));
 
 // Define a middleware function to be used for every secured routes
 var auth = function(req, res, next)
-{ if (!req.isAuthenticated())
-  res.send(401);
-  else next();
+  { if (!req.isAuthenticated())
+    res.send(401);
+    else next();
 };
 
 passport.serializeUser(function(user, done) {
@@ -66,18 +53,22 @@ app.get('/', function(req, res) {
   res.sendfile("public/js/partials/index.html");
 });
 
-user = {list:[1,2,3,4]};
-
-
 // route to test if user is logged in or not
+
 app.get('/loggedin', function(req, res) {
-  res.send(req.isAuthenticated() ? req.user :'0' );
+  //res.sendfile("public/js/partials/index.html");
+  res.send(req.isAuthenticated() ? req.user : '0' );
 });
 
 // route to log in
-app.post('/login', passport.authenticate('local'), function(req, res) {
-  res.send(req.user);
+app.post('/login', passport.authenticate('local-login'), function(req, res) {
+  console.log(req.user);
+  res.json({user:"something"});
 });
+
+app.post('/signup', passport.authenticate('local-signup'), function(req, res) {
+  res.json({user:"something"})
+})
 
 // route to log out
 app.post('/logout', function(req, res) {
