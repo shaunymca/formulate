@@ -1,0 +1,5 @@
+.metadata/
+.sass-cache/
+.DS_Store
+._.DS_Store
+keys.env

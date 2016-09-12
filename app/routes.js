@@ -1,4 +1,5 @@
 module.exports = function(app) {
+	var passport = require('passport');
 
 	// server routes ===========================================================
 	// handle things like api calls
@@ -6,8 +7,6 @@ module.exports = function(app) {
 
 	// frontend routes =========================================================
 	// route to handle all angular requests
-	app.get('*', function(req, res) {
-		res.sendfile('./public/index.html');
-	});
+
 
 };
